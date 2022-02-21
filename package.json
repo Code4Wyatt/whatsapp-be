@@ -16,5 +16,9 @@
     "url": "https://github.com/Code4Wyatt/whatsapp-be/issues"
   },
   "homepage": "https://github.com/Code4Wyatt/whatsapp-be#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "mongoose": "^6.2.2"
+  }
 }
