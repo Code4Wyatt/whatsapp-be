@@ -1,30 +1,30 @@
 interface User {
-    _id: String;
-    username: String;
-    email: String;
-    avatar: String;
+    _id: string;
+    username: string;
+    email: string;
+    avatar: string;
     checkCredentials: Promise<User | null>;
 }
 
 interface Chat {
-    _id: String;
+    _id: string;
     members: User[];
     messages: Message[];
-    avatar: String;
+    avatar: string;
 }
 
 interface Message {
-    _id: String;
-    timestamp: Number;
-    sender: String[];
+    _id: string;
+    timestamp: number;
+    sender: string[];
     content: Text & Media;
 }
 
 interface Text {
-   text: String
+   text: string
 }
 
 interface Media {
-   text: String
+   text: string
 }
 

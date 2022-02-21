@@ -4,7 +4,7 @@ import listEndpoints from "express-list-endpoints";
 import mongoose from "mongoose";
 import passport from "passport";
 import usersRouter from "./services/users/index.js";
-import {googleStrategy} from "./auth/oauth.js";
+import googleStrategy from "./auth/oauth.js";
 import {
   badRequestHandler,
   genericErrorHandler,
@@ -13,18 +13,18 @@ import {
   forbiddenHandler,
 } from "./errorHandlers.js";
 
-const whiteList = [process.env.FE_LOCAL_URL, process.env.FE_REMOTE_URL];
+// const whiteList = [process.env.FE_LOCAL_URL, process.env.FE_REMOTE_URL];
 
-const corsOptions = {
-  origin: function (origin, next) {
-    console.log(origin);
-    if (!origin || whiteList.indexOf(origin) !== -1) {
-      next(null, true);
-    } else {
-      next(new Error("Not allowed by CORS"));
-    }
-  },
-};
+// const corsOptions = {
+//   origin: function (origin, next) {
+//     console.log(origin);
+//     if (!origin || whiteList.indexOf(origin) !== -1) {
+//       next(null, true);
+//     } else {
+//       next(new Error("Not allowed by CORS"));
+//     }
+//   },
+// };
 
 const server = express();
 
@@ -34,7 +34,7 @@ passport.use("google", googleStrategy)
 
 // Middlewares //
 
-server.use(cors(corsOptions));
+server.use(cors());
 server.use(express.json());
 server.use(passport.initialize());
 
