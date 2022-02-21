@@ -3,7 +3,7 @@ import GoogleStrategy from "passport-google-oauth20"
 import UsersModel from "../services/users/schema.js"
 import { JWTAuthenticate } from "./tools"
 
-export const googleStrategy = new GoogleStrategy(
+const googleStrategy = new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_OAUTH_ID,
       clientSecret: process.env.GOOGLE_OAUTH_SECRET,
@@ -47,4 +47,6 @@ export const googleStrategy = new GoogleStrategy(
     // if you don't have this function, passport will trigerr a "failed to serialize" error
     passportNext(null, data)
   })
-  
+
+
+  export default googleStrategy
