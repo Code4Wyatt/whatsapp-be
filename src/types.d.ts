@@ -7,12 +7,14 @@ interface User {
 }
 
 interface Chat {
+    _id: String;
     members: User[];
     messages: Message[];
     avatar: String;
 }
 
 interface Message {
+    _id: String;
     timestamp: Number;
     sender: String[];
     content: Text & Media;
