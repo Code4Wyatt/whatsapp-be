@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Code4Wyatt/whatsapp-be#readme",
   "description": "",
   "dependencies": {
+    "@types/express": "^4.17.13",
     "atob": "^2.1.2",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
