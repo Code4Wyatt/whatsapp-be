@@ -16,7 +16,7 @@ interface Chat {
 interface Message {
     _id: string;
     timestamp: number;
-    sender: string[];
+    sender: User;
     content: Text & Media;
 }
 

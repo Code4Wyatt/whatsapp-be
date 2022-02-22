@@ -2,6 +2,10 @@ import jwt from "jsonwebtoken";
 import UsersModel from "../services/users/schema"
 import createHttpError from "http-errors"
 
+type MyPayload = {
+    id: string
+}
+
 export const JWTAuthenticate = async (user: User) => {
   const accessToken = await generateJWTToken({
     _id: user._id,
@@ -10,7 +14,7 @@ export const JWTAuthenticate = async (user: User) => {
   return accessToken;
 };
 
-const generateJWTToken = (payload) =>
+const generateJWTToken = (payload: MyPayload) =>
   new Promise((resolve, reject) =>
     jwt.sign(
       payload,

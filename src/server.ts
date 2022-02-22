@@ -3,15 +3,15 @@ import cors from "cors";
 import listEndpoints from "express-list-endpoints";
 import mongoose from "mongoose";
 import passport from "passport";
-import usersRouter from "./services/users/index.js";
-import googleStrategy from "./auth/oauth.js";
+import usersRouter from "./services/users/index";
+import googleStrategy from "./auth/oauth";
 import {
   badRequestHandler,
   genericErrorHandler,
   notFoundHandler,
   unauthorizedHandler,
   forbiddenHandler,
-} from "./errorHandlers.js";
+} from "./errorHandlers";
 
 // const whiteList = [process.env.FE_LOCAL_URL, process.env.FE_REMOTE_URL];
 
@@ -52,7 +52,7 @@ server.use(genericErrorHandler);
 server.use(forbiddenHandler);
 server.use(unauthorizedHandler);
 
-mongoose.connect(process.env.MONGO_CONNECTION);
+mongoose.connect(process.env.MONGO_CONNECTION!);
 
 mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB!");

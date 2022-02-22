@@ -1,6 +1,6 @@
 import express from "express";
 import createHttpError from "http-errors";
-import UsersModel from "./schema.js";
+import { UserModel } from "./schema";
 // import BlogModel from "../blogs/index.js";
 import passport from "passport";
 import { basicAuthMiddleware } from "../../auth/basic.js";
@@ -38,9 +38,9 @@ usersRouter.post(
   "/users/account",
   async (req, res, next) => {
     try {
-      const newUser = new UsersModel(req.body);
+      const newUser = new UserModel(req.body);
       const { _id } = await newUser.save();
-        delete newUser._doc.password;
+  
 
       const errors = validationResult(req);
 
@@ -48,8 +48,8 @@ usersRouter.post(
         return res.status(422).json({
           errors: errors.array(),
         });
-      }
-
+        }
+    
       const token = await JWTAuthenticate({ id: newUser._id })
       res.status(201).send({ _id, token });
     } catch (error) {
@@ -64,7 +64,7 @@ usersRouter.get(
   adminOnlyMiddleware,
   async (req, res, next) => {
     try {
-      const users = await UsersModel.find();
+      const users = await UserModel.find();
       res.send(users);
     } catch (error) {
       next(error);
@@ -76,7 +76,7 @@ usersRouter.get("/:userId", basicAuthMiddleware, async (req, res, next) => {
   try {
     const userId = req.params.userId;
 
-    const user = await UsersModel.findById(userId);
+    const user = await UserModel.findById(userId);
     if (user) {
       res.send(user);
     } else {
@@ -90,10 +90,10 @@ usersRouter.get("/:userId", basicAuthMiddleware, async (req, res, next) => {
 // Get User Stories
 
 
-usersRouter.get("/me/posts", basicAuthMiddleware, async (req, res, next) => {
+usersRouter.get("/:_id/posts", basicAuthMiddleware, async (req, res, next) => {
     try {
-      const userId = req.params.userId;
-      const posts = await BlogModel.find({ user: userId.toString() })
+      const userId = req.params._id;
+      const posts = await UserModel.find({ user: userId.toString() })
   
       res.status(200).send(posts)
   
@@ -105,7 +105,7 @@ usersRouter.get("/me/posts", basicAuthMiddleware, async (req, res, next) => {
 usersRouter.put("/:userId", basicAuthMiddleware, async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const updatedUser = await UsersModel.findByIdAndUpdate(userId, req.body, {
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, req.body, {
       new: true,
     }); // by default findByIdAndUpdate returns the document pre-update, if I want to retrieve the updated document, I should use new:true as an option
     if (updatedUser) {
@@ -121,7 +121,7 @@ usersRouter.put("/:userId", basicAuthMiddleware, async (req, res, next) => {
 usersRouter.delete("/:userId", basicAuthMiddleware, async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const deletedUser = await UsersModel.findByIdAndDelete(userId);
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
     if (deletedUser) {
       res.status(204).send();
     } else {
@@ -132,22 +132,22 @@ usersRouter.delete("/:userId", basicAuthMiddleware, async (req, res, next) => {
   }
 });
 
-usersRouter.post("/login", async (req, res, next) => {
-  try {
-    const { email, password } = req.body; // Get credentials from req.body
+// usersRouter.post("/login", async (req, res, next) => {
+//   try {
+//     const { email, password } = req.body; // Get credentials from req.body
 
-    const user = await UsersModel.checkCredentials(email, password); // Verify the credentials
+//     const user = await UserModel.checkCredentials(email, password); // Verify the credentials
 
-    if (user) {
-      // If credentials are fine we will generate a JWT token
-      const accessToken = await JWTAuthenticate(user);
-      res.status(200).send({ accessToken });
-    } else {
-      next(createHttpError(401, "Invalid Credentials!"));
-    }
-  } catch (error) {
-    next(error);
-  }
-});
+//     if (user) {
+//       // If credentials are fine we will generate a JWT token
+//       const accessToken = await JWTAuthenticate(user);
+//       res.status(200).send({ accessToken });
+//     } else {
+//       next(createHttpError(401, "Invalid Credentials!"));
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 export default usersRouter;
