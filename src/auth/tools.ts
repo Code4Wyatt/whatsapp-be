@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { UserModel } from "src/services/users/schema";
 import createHttpError from "http-errors"
 
-type MyPayload = {
+type WAJWTPayload = {
     id: string
 }
 
@@ -11,37 +11,51 @@ export const JWTAuthenticate = async (user: User) => {
     id: user._id,
     // username: user.username,
   });
-  return accessToken;
+  const refreshToken = await generateRefreshJWTToken({ id: user._id })
+  return {accessToken, refreshToken};
 };
 
-const generateJWTToken = (payload: MyPayload) =>
-  new Promise((resolve, reject) =>
+const generateJWTToken = (payload: WAJWTPayload) =>
+  new Promise<string>((resolve, reject) =>
     jwt.sign(
       payload,
       process.env.JWT_SECRET!,
       { expiresIn: "15m" },
       (err, token) => {
         if (err) reject(err);
-        else resolve(token);
+        else resolve(token as string);
       }
     )
   );
 
 // USAGE: const token = await generateJWTToken({_id: "oaijsdjasdojasoidj"})
 
-export const verifyJWT = (token:string) =>
+const generateRefreshJWTToken = (payload: WAJWTPayload) =>
   new Promise((resolve, reject) =>
+    jwt.sign(
+      payload,
+      process.env.REFRESH_JWT_SECRET!,
+      { expiresIn: "1 week" },
+      (err, token) => {
+        if (err) reject(err)
+        else resolve(token)
+      }
+    )
+  )
+
+export const verifyJWT = (token:string) =>
+  new Promise<WAJWTPayload>((resolve, reject) =>
     jwt.verify(token, process.env.JWT_SECRET!, (err, payload) => {
       if (err) reject(err);
-      else resolve(payload);
+      else resolve(payload as WAJWTPayload);
     })
   );
 
-  const verifyRefreshToken = token =>
-  new Promise((resolve, reject) =>
+  const verifyRefreshToken = (token: string) =>
+  new Promise<WAJWTPayload>((resolve, reject) =>
     jwt.verify(token, process.env.REFRESH_JWT_SECRET!, (err:any, payload) => {
       if (err) reject(err)
-      else resolve(payload)
+      else resolve(payload as WAJWTPayload)
     })
   )
 
@@ -55,21 +69,21 @@ export const verifyRefreshTokenAndGenerateNewTokens = async (
     const payload = await verifyRefreshToken(currentRefreshToken);
 
     // 2. If token is valid, we shall check if it is the same as the one saved in db
-    const user = await UserModel.findById(payload._id);
+    const user = await UserModel.findById(payload.id);
 
     if (!user)
-      throw new createHttpError(404, `User with id ${payload._id} not found!`);
+      throw createHttpError(404, `User with id ${payload.id} not found!`);
 
-    if (user.refreshToken && user.refreshToken === currentRefreshToken) {
+    if (user.refreshToken && user.refreshToken.includes(currentRefreshToken)) {
       // 3. If everything is fine --> generate accessToken and refreshToken
       const { accessToken, refreshToken } = await JWTAuthenticate(user);
 
       // 4. Return tokens
       return { accessToken, refreshToken };
     } else {
-      throw new createHttpError(401, "Refresh token not valid!");
+      throw createHttpError(401, "Refresh token not valid!");
     }
   } catch (error) {
-    throw new createHttpError(401, "Refresh token expired or compromised!");
+    throw createHttpError(401, "Refresh token expired or compromised!");
   }
 };

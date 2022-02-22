@@ -6,7 +6,8 @@ interface User {
     username: string;
     email: string;
     password: string
-    avatar: string;
+  avatar: string;
+  refreshToken: string[]
 }
 
 const { Schema, model } = mongoose;
@@ -18,6 +19,7 @@ const UserSchema = new Schema<User>(
         email: { type: String, required: true },
     password: { type: String, required: true },
         avatar: { type: String, required: true },
+        refreshToken: { type: [String], required: true, default: [] },
     
   },
   {

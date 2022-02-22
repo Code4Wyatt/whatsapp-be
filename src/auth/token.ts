@@ -1,8 +1,8 @@
 import createHttpError from "http-errors"
 import { verifyJWT } from "./tools.js"
-import {NextFunction} from 'express'
+import { RequestHandler } from 'express'
 
-export const JWTAuthMiddleware = async (req:Request, res:Response, next:NextFunction) => {
+export const JWTAuthMiddleware: RequestHandler = async (req, res, next) => {
   if (!req.headers.authorization) {
     // 1. Check if Authorization header is in the request, if it is not --> 401
     next(
