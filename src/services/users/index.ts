@@ -1,4 +1,4 @@
-import express from "express";
+import express from 'express'
 import createHttpError from "http-errors";
 import { UserModel } from "./schema";
 import passport from "passport";
@@ -10,37 +10,14 @@ import { JWTAuthenticate, verifyRefreshTokenAndGenerateNewTokens } from "../../a
 
 const usersRouter = express.Router();
 
-// usersRouter.get(
-//   "/googleLogin",
-//   passport.authenticate("google", { scope: ["profile", "email"] })
-// ) // This endpoint receives Google Login requests from our FE, and it is going to redirect users to Google Consent Screen
 
-// usersRouter.get(
-//   "/googleRedirect", // This endpoint URL should match EXACTLY the one configured on google.cloud dashboard
-//   passport.authenticate("google"),
-//   async (req, res, next) => {
-//     try {
-//       console.log("TOKENS: ", req.user.tokens)
-//       // SEND BACK TOKENS
-//       res.redirect(
-//         `${process.env.FE_URL}?accessToken=${req.user.tokens.accessToken}&refreshToken=${req.user.tokens.refreshToken}`
-//       )
-//     } catch (error) {
-//       next(error)
-//     }
-//   }
-// )
 
 /// JWT Register 
 
-usersRouter.post(
-  "/users/account",
-  async (req, res, next) => {
+usersRouter.post("/account", async (req, res, next) => {
     try {
       const newUser = new UserModel(req.body);
       const { _id } = await newUser.save();
-  
-
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {

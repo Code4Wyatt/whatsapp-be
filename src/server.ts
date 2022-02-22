@@ -1,8 +1,8 @@
-import express from "express";
+import express from 'express';
 import cors from "cors";
-import listEndpoints from "express-list-endpoints";
+import listEndpoints from 'express-list-endpoints';
 import mongoose from "mongoose";
-import passport from "passport";
+import passport from "passport"
 import usersRouter from "./services/users/index";
 import googleStrategy from "./auth/oauth";
 import {
