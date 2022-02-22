@@ -3,21 +3,20 @@ import bcrypt from "bcrypt";
 
 const { Schema, model } = mongoose;
 
-const UserSchema = new Schema<User, UserModel>(
-    {
-        _id: { type: String, required: true },
-        username: { type: String, required: true },
-        email: { type: String, required: true },
-        password: { type: String, required: true },
+const UserSchema = new Schema<User>(
+  {
+    _id: { type: String, required: true },
+    username: { type: String, required: true },
+    email: { type: String, required: true },
+    password: {type:String, required: true},
     avatar: { type: String, required: true },
-    checkCredentials: { type: Promise, required: true },
   },
   {
     timestamps: true,
   }
 );
 
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function (next: () => void) {
   // before saving the user in the database, hash the password
   const newUser = this;
   const plainPW = newUser.password;
@@ -40,7 +39,7 @@ UserSchema.methods.toJSON = function () {
   return userObject;
 };
 
-UserSchema.statics.checkCredentials = async function (email, plainPW) {
+UserSchema.statics.checkCredentials = async function (email: string, plainPW: string) {
   const user = await this.findOne({ email }); // find the user by email, using this in a normal function to target the schema in this file
 
   if (user) {
@@ -54,10 +53,7 @@ UserSchema.statics.checkCredentials = async function (email, plainPW) {
     return null;
   }
 };
-
 interface UserModel extends Model<User> {
-    checkCredentials: (email: string, password: string) => Promise<User | null>;
+checkCredentials: (email: string, password: string) => Promise<User | null>;
 }
-  
 export const UserModel = model<User, UserModel>("User", UserSchema)
-
