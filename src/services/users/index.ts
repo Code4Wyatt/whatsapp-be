@@ -1,7 +1,6 @@
 import express from "express";
 import createHttpError from "http-errors";
 import { UserModel } from "./schema";
-// import BlogModel from "../blogs/index.js";
 import passport from "passport";
 import { basicAuthMiddleware } from "../../auth/basic.js";
 import { adminOnlyMiddleware } from "../../auth/admin.js";
@@ -32,7 +31,7 @@ const usersRouter = express.Router();
 //   }
 // )
 
-// JWT Register 
+/// JWT Register 
 
 usersRouter.post(
   "/users/account",
