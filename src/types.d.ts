@@ -6,6 +6,10 @@ interface User {
     checkCredentials: Promise<User | null>;
 }
 
+interface UserModel extends Model<User> {
+    checkCredentials(): any;
+  }
+
 interface Chat {
     _id: string;
     members: User[];
