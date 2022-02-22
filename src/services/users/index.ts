@@ -131,22 +131,22 @@ usersRouter.delete("/:userId", basicAuthMiddleware, async (req, res, next) => {
   }
 });
 
-// usersRouter.post("/login", async (req, res, next) => {
-//   try {
-//     const { email, password } = req.body; // Get credentials from req.body
+usersRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body; // Get credentials from req.body
 
-//     const user = await UserModel.checkCredentials(email, password); // Verify the credentials
+    const user = await UserModel.checkCredentials(email, password); // Verify the credentials
 
-//     if (user) {
-//       // If credentials are fine we will generate a JWT token
-//       const accessToken = await JWTAuthenticate(user);
-//       res.status(200).send({ accessToken });
-//     } else {
-//       next(createHttpError(401, "Invalid Credentials!"));
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+    if (user) {
+      // If credentials are fine we will generate a JWT token
+      const accessToken = await JWTAuthenticate(user);
+      res.status(200).send({ accessToken });
+    } else {
+      next(createHttpError(401, "Invalid Credentials!"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default usersRouter;

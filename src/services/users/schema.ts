@@ -3,12 +3,13 @@ import bcrypt from "bcrypt";
 
 const { Schema, model } = mongoose;
 
-const UserSchema = new Schema<User>(
-  {
-    _id: { type: String, required: true },
-    username: { type: String, required: true },
-    email: { type: String, required: true },
-        avatar: { type: String, required: true },
+const UserSchema = new Schema<User, UserModel>(
+    {
+        _id: { type: String, required: true },
+        username: { type: String, required: true },
+        email: { type: String, required: true },
+        password: { type: String, required: true },
+    avatar: { type: String, required: true },
     checkCredentials: { type: Promise, required: true },
   },
   {
@@ -55,7 +56,8 @@ UserSchema.statics.checkCredentials = async function (email, plainPW) {
 };
 
 interface UserModel extends Model<User> {
-    checkCredentials(): any;
-  }
-export const UserModel = model("User", UserSchema)
+    checkCredentials: (email: string, password: string) => Promise<User | null>;
+}
+  
+export const UserModel = model<User, UserModel>("User", UserSchema)
 
