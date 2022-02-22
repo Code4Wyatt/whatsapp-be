@@ -1,6 +1,14 @@
 import mongoose, { Model } from "mongoose";
 import bcrypt from "bcrypt";
 
+interface User {
+    _id: string;
+    username: string;
+    email: string;
+    password: string
+    avatar: string;
+}
+
 const { Schema, model } = mongoose;
 
 const UserSchema = new Schema<User>(
@@ -55,6 +63,7 @@ UserSchema.statics.checkCredentials = async function (email, plainPW) {
   }
 };
 
+interface UserModel extends Model<User> {
 checkCredentials: (email: string, password: string) => Promise<User | null>;
 }
 

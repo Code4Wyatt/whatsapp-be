@@ -29,3 +29,10 @@ interface Media {
    text: string
 }
 
+interface Headers {
+    authorization: string
+}
+
+interface Request {
+    user: string
+}
