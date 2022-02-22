@@ -24,9 +24,16 @@ chatRouter.get("/chats", basicAuthMiddleware, async (req, res, next) => {
 
 chatRouter.post("/chats", basicAuthMiddleware, async (req, res, next) => {
   try {
-    const newChatMessage = new ChatModel(req.body);
-    const { _id } = await newChatMessage.save();
-    res.status(201).send({ _id });
+    const userId = req.body._id;
+    const oldChatMessage = await ChatModel.find({
+      members: { $all: [userId] },
+    });
+    if (oldChatMessage) {
+      const newChatMessage = new ChatModel();
+      const { _id } = await newChatMessage.save();
+      res.status(201).send({ _id });
+    } else {
+    }
   } catch (error) {
     next(error);
   }

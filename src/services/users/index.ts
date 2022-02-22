@@ -26,7 +26,7 @@ usersRouter.post("/account", async (req, res, next) => {
         });
         }
     
-      const token = await JWTAuthenticate({ id: newUser._id })
+      const token = await JWTAuthenticate(newUser)
       res.status(201).send({ _id, token });
     } catch (error) {
       next(error);
