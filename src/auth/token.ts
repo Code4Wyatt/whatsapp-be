@@ -21,7 +21,7 @@ export const JWTAuthMiddleware: RequestHandler = async (req, res, next) => {
       // 4. If token was ok we can go next
 
       req.user = {
-        _id: payload._id,
+        _id: payload.id,
         
       }
       next()
