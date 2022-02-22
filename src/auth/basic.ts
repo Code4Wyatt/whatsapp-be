@@ -24,7 +24,7 @@ export const basicAuthMiddleware = async (req: Request, res: Response, next: Nex
       console.log(user)
       if (user) {
     
-        req.user=user
+        req.user={email: user.email, password: user.password}
         next()
       } else {
         next(createHttpError(401, "Credentials are not ok!"))
