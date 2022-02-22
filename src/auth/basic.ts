@@ -1,7 +1,7 @@
 import createHttpError from "http-errors"
-import atob from "atob"
-import { UserModel } from "../services/users/schema"
-import { NextFunction } from "express"
+import atob from 'atob'
+import { UserModel } from "src/services/users/schema"
+import { NextFunction } from 'express'
 
 export const basicAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   
@@ -21,10 +21,10 @@ export const basicAuthMiddleware = async (req: Request, res: Response, next: Nex
   
       
       const user = await UserModel.checkCredentials(email, password)
-  
+      console.log(user)
       if (user) {
     
-        req.user = user 
+        req.user={email: user.email, password: user.password}
         next()
       } else {
         next(createHttpError(401, "Credentials are not ok!"))

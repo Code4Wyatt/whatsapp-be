@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import UsersModel from "../services/users/schema"
+import { UserModel } from "src/services/users/schema";
 import createHttpError from "http-errors"
 
 type MyPayload = {
@@ -8,8 +8,8 @@ type MyPayload = {
 
 export const JWTAuthenticate = async (user: User) => {
   const accessToken = await generateJWTToken({
-    _id: user._id,
-    username: user.username,
+    id: user._id,
+    // username: user.username,
   });
   return accessToken;
 };
@@ -18,7 +18,7 @@ const generateJWTToken = (payload: MyPayload) =>
   new Promise((resolve, reject) =>
     jwt.sign(
       payload,
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET!,
       { expiresIn: "15m" },
       (err, token) => {
         if (err) reject(err);
@@ -29,9 +29,9 @@ const generateJWTToken = (payload: MyPayload) =>
 
 // USAGE: const token = await generateJWTToken({_id: "oaijsdjasdojasoidj"})
 
-export const verifyJWT = (token) =>
+export const verifyJWT = (token:string) =>
   new Promise((resolve, reject) =>
-    jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+    jwt.verify(token, process.env.JWT_SECRET!, (err, payload) => {
       if (err) reject(err);
       else resolve(payload);
     })
@@ -39,7 +39,7 @@ export const verifyJWT = (token) =>
 
   const verifyRefreshToken = token =>
   new Promise((resolve, reject) =>
-    jwt.verify(token, process.env.REFRESH_JWT_SECRET, (err, payload) => {
+    jwt.verify(token, process.env.REFRESH_JWT_SECRET!, (err:any, payload) => {
       if (err) reject(err)
       else resolve(payload)
     })
@@ -48,14 +48,14 @@ export const verifyJWT = (token) =>
 // USAGE: const payload = await verifyJWT(token)
 
 export const verifyRefreshTokenAndGenerateNewTokens = async (
-  currentRefreshToken
+  currentRefreshToken:string
 ) => {
   try {
     // 1. Check the validity of the current refresh token (exp date and integrity)
     const payload = await verifyRefreshToken(currentRefreshToken);
 
     // 2. If token is valid, we shall check if it is the same as the one saved in db
-    const user = await UsersModel.findById(payload._id);
+    const user = await UserModel.findById(payload._id);
 
     if (!user)
       throw new createHttpError(404, `User with id ${payload._id} not found!`);
