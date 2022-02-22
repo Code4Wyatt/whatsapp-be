@@ -10,7 +10,6 @@ const UserSchema = new Schema<User, UserModel>(
         email: { type: String, required: true },
         password: { type: String, required: true },
     avatar: { type: String, required: true },
-    checkCredentials: { type: Promise, required: true },
   },
   {
     timestamps: true,
