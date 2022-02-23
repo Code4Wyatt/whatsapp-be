@@ -39,14 +39,14 @@ const generateJWTToken = (payload: MyPayload) =>
 // USAGE: const token = await generateJWTToken({_id: "oaijsdjasdojasoidj"})
 
 const generateRefreshJWTToken = (payload: MyPayload) =>
-  new Promise((resolve, reject) =>
+  new Promise<string>((resolve, reject) =>
     jwt.sign(
       payload,
       process.env.REFRESH_JWT_SECRET!,
       { expiresIn: "1 week" },
       (err, token) => {
         if (err) reject(err)
-        else resolve(token)
+        else resolve(token!)
       }
     )
   )
@@ -59,13 +59,13 @@ export const verifyJWT = (token: string) =>
     })
   );
 
-  const verifyRefreshToken = (token: string) =>
+const verifyRefreshToken = (token: string) =>
   new Promise<WAJWTPayload>((resolve, reject) =>
     jwt.verify(token, process.env.REFRESH_JWT_SECRET!, (err, payload) => {
       if (err) reject(err)
       else resolve(payload as WAJWTPayload)
     })
-  )
+  );
 
 // USAGE: const payload = await verifyJWT(token)
 
