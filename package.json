@@ -35,15 +35,16 @@
         "typescript": "^4.5.5"
     },
     "devDependencies": {
+        "@types/atob": "^2.1.2",
         "@types/bcrypt": "^5.0.0",
         "@types/cors": "^2.8.12",
         "@types/express-list-endpoints": "^6.0.0",
         "@types/http-errors": "^1.8.2",
         "@types/jsonwebtoken": "^8.5.8",
         "@types/passport": "^1.0.7",
+        "@types/passport-google-oauth20": "^2.0.11",
         "dotenv": "^16.0.0",
         "nodemon": "^2.0.15",
         "ts-node-dev": "^1.1.8"
     }
-
 }

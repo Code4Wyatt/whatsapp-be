@@ -1,7 +1,7 @@
 import createHttpError from "http-errors"
 import atob from "atob"
-import { UserModel } from "../services/users/schema"
-import { NextFunction } from "express"
+import UserModel from "../services/users/schema"
+import { Request, Response, NextFunction } from "express"
 
 export const basicAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   

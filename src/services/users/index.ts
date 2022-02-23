@@ -1,13 +1,16 @@
 import express from "express";
 import createHttpError from "http-errors";
-import { UserModel } from "./schema";
+import  UserModel  from "./schema";
 import passport from "passport";
 import { basicAuthMiddleware } from "../../auth/basic";
-import { adminOnlyMiddleware } from "../../auth/admin";
+// import { adminOnlyMiddleware } from "../../auth/admin";
 import { check, validationResult } from "express-validator";
 import { JWTAuthMiddleware } from "../../auth/token";
 import { JWTAuthenticate, verifyRefreshTokenAndGenerateNewTokens } from "../../auth/tools";
-
+interface JWTResponse {
+  _id: string,
+  username: string
+}
 const usersRouter = express.Router();
 
 // usersRouter.get(
@@ -49,7 +52,7 @@ usersRouter.post(
         });
         }
     
-      const token = await JWTAuthenticate({ id: newUser._id })
+      const token = await JWTAuthenticate(newUser)
       res.status(201).send({ _id, token });
     } catch (error) {
       next(error);
@@ -60,7 +63,6 @@ usersRouter.post(
 usersRouter.get(
   "/",
   JWTAuthMiddleware,
-  adminOnlyMiddleware,
   async (req, res, next) => {
     try {
       const users = await UserModel.find();
