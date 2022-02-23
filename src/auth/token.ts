@@ -25,7 +25,7 @@ export const JWTAuthMiddleware = async (req: Request, res: Response, next: NextF
       // 4. If token was ok we can go next
 
       req.user = {
-        payload
+        _id: payload._id
       }
       next()
     } catch (error) {

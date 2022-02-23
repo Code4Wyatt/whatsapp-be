@@ -164,7 +164,7 @@ usersRouter.delete("/login", async (req, res, next) => {
     if (user) {
       // If credentials are fine we will generate a JWT token
       const accessToken = await JWTAuthenticate(user);
-      res.status(200).destroy({ accessToken });
+      res.status(202).send();
     } else {
       next(createHttpError(401, "Invalid Credentials!"));
     }
