@@ -52,7 +52,7 @@ const generateRefreshJWTToken = (payload: MyPayload) =>
   )
 
 export const verifyJWT = (token: string) =>
-  new Promise((resolve, reject) =>
+  new Promise<WAJWTPayload>((resolve, reject) =>
     jwt.verify(token, process.env.JWT_SECRET!, (err, payload) => {
       if (err) reject(err);
       else resolve(payload as WAJWTPayload);

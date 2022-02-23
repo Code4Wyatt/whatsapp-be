@@ -4,6 +4,7 @@ import listEndpoints from "express-list-endpoints";
 import mongoose from "mongoose";
 import passport from "passport";
 import usersRouter from "./services/users/index";
+import chatRouter from "../src/services/chats/index";
 import googleStrategy from "./auth/oauth";
 import {
   badRequestHandler,
@@ -41,8 +42,7 @@ server.use(passport.initialize());
 // Routes //
 
 server.use("/users", usersRouter);
-// server.use("/blogs", blogsRouter);
-// server.use("/authors", authorsRouter);
+server.use("/chats", chatRouter);
 
 // Error Handlers //
 

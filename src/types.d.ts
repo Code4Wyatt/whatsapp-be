@@ -36,3 +36,13 @@ interface Headers {
 interface Request {
     user: string
 }
+
+namespace Express {
+    interface User {
+        _id?: string
+        tokens?: {
+            accessToken: string;
+            refreshToken: string;
+        }
+    }
+}

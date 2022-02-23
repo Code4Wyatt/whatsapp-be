@@ -13,36 +13,36 @@ interface JWTResponse {
 }
 const usersRouter = express.Router();
 
-// usersRouter.get(
-//   "/googleLogin",
-//   passport.authenticate("google", { scope: ["profile", "email"] })
-// ) // This endpoint receives Google Login requests from our FE, and it is going to redirect users to Google Consent Screen
+usersRouter.get(
+  "/googleLogin",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+) // This endpoint receives Google Login requests from our FE, and it is going to redirect users to Google Consent Screen
 
-// usersRouter.get(
-//   "/googleRedirect", // This endpoint URL should match EXACTLY the one configured on google.cloud dashboard
-//   passport.authenticate("google"),
-//   async (req, res, next) => {
-//     try {
-//       console.log("TOKENS: ", req.user.tokens)
-//       // SEND BACK TOKENS
-//       res.redirect(
-//         `${process.env.FE_URL}?accessToken=${req.user.tokens.accessToken}&refreshToken=${req.user.tokens.refreshToken}`
-//       )
-//     } catch (error) {
-//       next(error)
-//     }
-//   }
-// )
+usersRouter.get(
+  "/googleRedirect", // This endpoint URL should match EXACTLY the one configured on google.cloud dashboard
+  passport.authenticate("google"),
+  async (req, res, next) => {
+    try {
+      console.log("TOKENS: ", req.user?.tokens)
+      // SEND BACK TOKENS
+      res.redirect(
+        `${process.env.FE_URL}?accessToken=${req.user!.tokens!.accessToken}&refreshToken=${req.user!.tokens!.refreshToken}`
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
+)
 
-/// JWT Register 
+/// JWT Register
 
 usersRouter.post(
-  "/users/account",
+  "/account",
   async (req, res, next) => {
     try {
       const newUser = new UserModel(req.body);
       const { _id } = await newUser.save();
-  
+
 
       const errors = validationResult(req);
 
@@ -51,7 +51,7 @@ usersRouter.post(
           errors: errors.array(),
         });
         }
-    
+
       const token = await JWTAuthenticate(newUser)
       res.status(201).send({ _id, token });
     } catch (error) {
@@ -65,7 +65,7 @@ usersRouter.get(
   JWTAuthMiddleware,
   async (req, res, next) => {
     try {
-      const users = await UserModel.find();
+      const users = await UserModel.find({ username: req.params.username });
       res.send(users);
     } catch (error) {
       next(error);
@@ -95,9 +95,9 @@ usersRouter.get("/:_id/posts", basicAuthMiddleware, async (req, res, next) => {
     try {
       const userId = req.params._id;
       const posts = await UserModel.find({ user: userId.toString() })
-  
+
       res.status(200).send(posts)
-  
+
     } catch (error) {
       next(error)
     }
@@ -133,6 +133,8 @@ usersRouter.delete("/:userId", basicAuthMiddleware, async (req, res, next) => {
   }
 });
 
+// Login
+
 usersRouter.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body; // Get credentials from req.body
@@ -143,6 +145,26 @@ usersRouter.post("/login", async (req, res, next) => {
       // If credentials are fine we will generate a JWT token
       const accessToken = await JWTAuthenticate(user);
       res.status(200).send({ accessToken });
+    } else {
+      next(createHttpError(401, "Invalid Credentials!"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Logout
+
+usersRouter.delete("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body; // Get credentials from req.body
+
+    const user = await UserModel.checkCredentials(email, password); // Verify the credentials
+
+    if (user) {
+      // If credentials are fine we will generate a JWT token
+      const accessToken = await JWTAuthenticate(user);
+      res.status(200).destroy({ accessToken });
     } else {
       next(createHttpError(401, "Invalid Credentials!"));
     }
