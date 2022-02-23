@@ -12,7 +12,7 @@ import {
 
 const chatRouter = express.Router();
 
-chatRouter.get("/chats", basicAuthMiddleware, async (req, res, next) => {
+chatRouter.get("/", basicAuthMiddleware, async (req, res, next) => {
   try {
     const userId = req.body._id;
     const chats = await ChatModel.find({ members: userId });
@@ -22,7 +22,7 @@ chatRouter.get("/chats", basicAuthMiddleware, async (req, res, next) => {
   }
 });
 
-chatRouter.post("/chats", basicAuthMiddleware, async (req, res, next) => {
+chatRouter.post("/", basicAuthMiddleware, async (req, res, next) => {
   try {
     const userId = req.body._id;
     const oldChatMessage = await ChatModel.find({
