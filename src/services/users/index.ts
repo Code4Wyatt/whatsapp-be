@@ -161,14 +161,6 @@ usersRouter.post("/login", async (req, res, next) => {
   }
 });
 
-// Logout
 
-usersRouter.get("/logout", async (req, res, next) => {
-  const options = {
-    expires: new Date(Date.now() + 10000)
-  }
-  res.cookie('jwt', 'expiredtoken', options)
-  res.status(200).json({status: "Logged out successfully"})
-});
 
 export default usersRouter;
