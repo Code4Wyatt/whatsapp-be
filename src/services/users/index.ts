@@ -155,22 +155,12 @@ usersRouter.post("/login", async (req, res, next) => {
 
 // Logout
 
-usersRouter.delete("/login", async (req, res, next) => {
-  try {
-    const { email, password } = req.body; // Get credentials from req.body
-
-    const user = await UserModel.checkCredentials(email, password); // Verify the credentials
-
-    if (user) {
-      // If credentials are fine we will generate a JWT token
-      const accessToken = await JWTAuthenticate(user);
-      res.status(202).send();
-    } else {
-      next(createHttpError(401, "Invalid Credentials!"));
-    }
-  } catch (error) {
-    next(error);
+usersRouter.delete("/logout", async (req, res, next) => {
+  const options = {
+    expires: new Date(Date.now() + 10000)
   }
+  res.cookie('jwt', 'expiredtoken', options)
+  res.status(200).json({status: "Logged out successfully"})
 });
 
 export default usersRouter;
