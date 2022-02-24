@@ -60,18 +60,22 @@ usersRouter.post(
   }
 );
 
+// Get Users
+
 usersRouter.get(
   "/",
   JWTAuthMiddleware,
   async (req, res, next) => {
     try {
-      const users = await UserModel.find({ username: req.params.username });
+      const users = await UserModel.find();
       res.send(users);
     } catch (error) {
       next(error);
     }
   }
 );
+
+// Get Specific User
 
 usersRouter.get("/:userId", basicAuthMiddleware, async (req, res, next) => {
   try {
@@ -88,7 +92,7 @@ usersRouter.get("/:userId", basicAuthMiddleware, async (req, res, next) => {
   }
 });
 
-// Get User Stories
+// Get User Chats
 
 
 usersRouter.get("/:_id/posts", basicAuthMiddleware, async (req, res, next) => {
@@ -101,7 +105,9 @@ usersRouter.get("/:_id/posts", basicAuthMiddleware, async (req, res, next) => {
     } catch (error) {
       next(error)
     }
-  })
+})
+  
+// Edit User
 
 usersRouter.put("/:userId", basicAuthMiddleware, async (req, res, next) => {
   try {
@@ -119,19 +125,21 @@ usersRouter.put("/:userId", basicAuthMiddleware, async (req, res, next) => {
   }
 });
 
-usersRouter.delete("/:userId", basicAuthMiddleware, async (req, res, next) => {
-  try {
-    const userId = req.params.userId;
-    const deletedUser = await UserModel.findByIdAndDelete(userId);
-    if (deletedUser) {
-      res.status(204).send();
-    } else {
-      next(createHttpError(404, `User with id ${userId} not found!`));
-    }
-  } catch (error) {
-    next(error);
-  }
-});
+// // Delete User
+
+// usersRouter.delete("/:userId", basicAuthMiddleware, async (req, res, next) => {
+//   try {
+//     const userId = req.params.userId;
+//     const deletedUser = await UserModel.findByIdAndDelete(userId);
+//     if (deletedUser) {
+//       res.status(204).send();
+//     } else {
+//       next(createHttpError(404, `User with id ${userId} not found!`));
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // Login
 
@@ -155,7 +163,7 @@ usersRouter.post("/login", async (req, res, next) => {
 
 // Logout
 
-usersRouter.delete("/logout", async (req, res, next) => {
+usersRouter.get("/logout", async (req, res, next) => {
   const options = {
     expires: new Date(Date.now() + 10000)
   }
