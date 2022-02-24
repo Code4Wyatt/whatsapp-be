@@ -5,6 +5,11 @@ interface User {
     password: string
     avatar: string;
 }
+interface OnlineUser {
+    _id: string;
+    username: string;
+    avatar: string;
+}
 
 
 interface Chat {
