@@ -1,4 +1,3 @@
-import { Socket } from "socket.io";
 
 interface User {
     _id: string;
@@ -6,12 +5,11 @@ interface User {
     email: string;
     password: string
     avatar: string;
+    tokens?: {
+            accessToken: string;
+            refreshToken: string;
+        }
 }
-interface OnlineUser {
-    _id: string;
-    socket: Socket;
-}
-
 
 interface Chat {
     _id: string;

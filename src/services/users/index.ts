@@ -7,7 +7,7 @@ import { basicAuthMiddleware } from "../../auth/basic";
 import { check, validationResult } from "express-validator";
 import { JWTAuthMiddleware } from "../../auth/token";
 import { JWTAuthenticate, verifyRefreshTokenAndGenerateNewTokens } from "../../auth/tools";
-import { onlineUsers } from "../../socket";
+
 
 interface JWTResponse {
   _id: string,

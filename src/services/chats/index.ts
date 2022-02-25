@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import ChatModel from "../chats/chatSchema";
 import { check, validationResult } from "express-validator";
 import { JWTAuthMiddleware } from "../../auth/token";
+import { Socket } from "socket.io"
 import {
   JWTAuthenticate,
   verifyRefreshTokenAndGenerateNewTokens,
@@ -31,7 +32,7 @@ chatRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
       members: { $all: [userId] },
     });
     if (oldChatMessage) {
-      
+      res.send(oldChatMessage);
     } else {
       const newChatMessage = new ChatModel();
       const { _id } = await newChatMessage.save();
