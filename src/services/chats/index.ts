@@ -9,13 +9,16 @@ import {
   verifyRefreshTokenAndGenerateNewTokens,
 } from "../../auth/tools";
 import { onlineUsers } from "../../socket";
+import Chat from "../chats/chatSchema"
+
 const chatRouter = express.Router();
+
 
 chatRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const userId = req.user!._id;
     const chats = await ChatModel.find({ members: userId });
-    const userSocket = onlineUsers.find( u => u._id === userId)!.socket
+    const userSocket = onlineUsers.find(u => u._id === userId)!.socket
 
     userSocket.join(chats.map(c => c._id))
     
@@ -29,14 +32,14 @@ chatRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const userId = req.user!._id;
     const oldChatMessage = await ChatModel.find({
-      members: { $all: [userId] },
+      members: { $all: [userId, req.body.recipient] },
     });
     if (oldChatMessage) {
       res.send(oldChatMessage);
     } else {
-      const newChatMessage = new ChatModel(req.body);
-      // const { _id } = await newChatMessage.save();
-      // res.status(201).send({ _id });
+      const newChatMessage = new ChatModel({ members: [userId, req.body.recipient] });
+       const { _id } = await newChatMessage.save();
+       res.status(201).send({ _id });
     }
   } catch (error) {
     next(error);
