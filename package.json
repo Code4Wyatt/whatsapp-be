@@ -20,6 +20,7 @@
     "homepage": "https://github.com/Code4Wyatt/whatsapp-be#readme",
     "description": "",
     "dependencies": {
+        "@types/mongoose-unique-validator": "^1.0.5",
         "atob": "^2.1.2",
         "bcrypt": "^5.0.1",
         "cors": "^2.8.5",
@@ -29,6 +30,7 @@
         "http-errors": "^2.0.0",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.2.2",
+        "mongoose-unique-validator": "^3.0.0",
         "passport": "^0.5.2",
         "passport-google-oauth20": "^2.0.0",
         "ts-node": "^10.5.0",

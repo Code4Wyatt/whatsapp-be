@@ -46,16 +46,17 @@ usersRouter.post(
       const { _id } = await newUser.save();
 
 
-      const errors = validationResult(req);
+      // const errors = validationResult(req);
 
-      if (!errors.isEmpty()) {
-        return res.status(422).json({
-          errors: errors.array(),
-        });
-        }
+      // if (!errors.isEmpty()) {
+      //   return res.status(422).json({
+      //     errors: errors.array(),
+      //   });
+      //   }
       const token = await JWTAuthenticate(newUser)
       res.status(201).send({ _id, token });
     } catch (error) {
+     console.log((error as Error).stack)
       next(error);
     }
   }
@@ -147,10 +148,12 @@ usersRouter.put("/:userId", basicAuthMiddleware, async (req, res, next) => {
 
 usersRouter.post("/login", async (req, res, next) => {
   try {
-    const { email, password } = req.body; // Get credentials from req.body
+    const { email, password } = req.body.userCredentials; // Get credentials from req.body
 
+    console.log(email, password)
+    
     const user = await UserModel.checkCredentials(email, password); // Verify the credentials
-
+    console.table({ user })
     if (user) {
       // If credentials are fine we will generate a JWT token
       const accessToken = await JWTAuthenticate(user);

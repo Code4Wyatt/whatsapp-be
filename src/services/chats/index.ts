@@ -34,9 +34,9 @@ chatRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
     if (oldChatMessage) {
       res.send(oldChatMessage);
     } else {
-      const newChatMessage = new ChatModel();
-      const { _id } = await newChatMessage.save();
-      res.status(201).send({ _id });
+      const newChatMessage = new ChatModel(req.body);
+      // const { _id } = await newChatMessage.save();
+      // res.status(201).send({ _id });
     }
   } catch (error) {
     next(error);

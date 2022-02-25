@@ -31,13 +31,14 @@ const server = express();
 
 const port = process.env.PORT || 5001;
 
-passport.use("google", googleStrategy)
+
 
 // Middlewares //
 
 server.use(cors());
 server.use(express.json());
 server.use(passport.initialize());
+passport.use("google", googleStrategy)
 
 // Routes //
 
