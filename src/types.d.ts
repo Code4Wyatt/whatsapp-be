@@ -5,6 +5,11 @@ interface User {
     password: string
     avatar: string;
 }
+interface OnlineUser {
+    _id: string;
+    username: string;
+    avatar: string;
+}
 
 
 interface Chat {
@@ -35,4 +40,14 @@ interface Headers {
 
 interface Request {
     user: string
+}
+
+namespace Express {
+    interface User {
+        _id?: string
+        tokens?: {
+            accessToken: string;
+            refreshToken: string;
+        }
+    }
 }

@@ -1,12 +1,13 @@
 import passport from "passport"
-import GoogleStrategy from "passport-google-oauth20"
-import UsersModel from "../services/users/schema.js"
+import { Strategy as GoogleStrategy } from "passport-google-oauth20"
+import UserModel from "../services/users/schema"
 import { JWTAuthenticate } from "./tools"
+import 'dotenv/config'
 
 const googleStrategy = new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_OAUTH_ID,
-      clientSecret: process.env.GOOGLE_OAUTH_SECRET,
+      clientID: process.env.GOOGLE_OAUTH_ID!,
+      clientSecret: process.env.GOOGLE_OAUTH_SECRET!,
       callbackURL: `${process.env.API_URL}/users/googleRedirect`,
     },
     async (accessToken, refreshToken, profile, passportNext) => {
@@ -16,7 +17,7 @@ const googleStrategy = new GoogleStrategy(
         console.log("PROFILE: ", profile)
   
         // 1. Check if the user is already in our db
-        const user = await UsersModel.findOne({ googleId: profile.id })
+        const user = await UserModel.findOne({ googleId: profile.id })
   
         if (user) {
           // 2. If the user is already there --> create some tokens for him/her
@@ -25,10 +26,9 @@ const googleStrategy = new GoogleStrategy(
           passportNext(null, { tokens }) // passportNext attaches tokens to req.user --> req.user.tokens
         } else {
           // 4. If user is not in db --> add user to db and then create some tokens for him/her
-          const newUser = new UsersModel({
-            name: profile.name.givenName,
-            surname: profile.name.familyName,
-            email: profile.emails[0].value,
+          const newUser = new UserModel({
+            username: profile.username,
+            emails: profile.emails,
             googleId: profile.id,
           })
   
@@ -38,7 +38,7 @@ const googleStrategy = new GoogleStrategy(
           passportNext(null, { tokens })
         }
       } catch (error) {
-        passportNext(error)
+        passportNext(error as string)
       }
     }
   )
