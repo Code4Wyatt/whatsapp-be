@@ -39,7 +39,7 @@ const generateJWTToken = (payload: MyPayload) =>
 // USAGE: const token = await generateJWTToken({_id: "oaijsdjasdojasoidj"})
 
 const generateRefreshJWTToken = (payload: WAJWTPayload) =>
-  new Promise((resolve, reject) =>
+  new Promise<string>((resolve, reject) =>
     jwt.sign(
       payload,
       process.env.REFRESH_JWT_SECRET!,
