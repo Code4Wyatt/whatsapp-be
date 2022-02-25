@@ -1,13 +1,25 @@
-import mongoose from "mongoose";
+import mongoose, {Model, Document} from "mongoose";
+
+
+
+interface Chat extends Document {
+  _id: string;
+  members: string;
+  messages: string;
+  avatar: string;
+  
+}
+
+
 
 const { Schema, model } = mongoose;
 
 const ChatSchema = new Schema<Chat>(
   {
-    _id: { type: String, required: true },
+    
     members: [{ type: String, required: true }],
     messages: [{ type: String, required: true }],
-    avatar: { type: String, required: true },
+    avatar: { type: String, required: false },
   },
   {
     timestamps: true,
