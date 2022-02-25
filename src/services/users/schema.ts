@@ -1,7 +1,7 @@
-import mongoose, { Model } from "mongoose";
+import mongoose, { Model , Document, HookNextFunction} from "mongoose";
 import bcrypt from "bcrypt";
-
-interface User {
+import uniqueValidator from "mongoose-unique-validator"
+interface User extends Document {
   _id: string;
   username: string;
   email: string;
@@ -14,11 +14,10 @@ const { Schema, model } = mongoose;
 
 const UserSchema = new Schema<User>(
   {
-    _id: { type: String },
     username: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    avatar: { type: String, required: true },
+    avatar: { type: String },
     refreshToken: { type: [String], required: true, default: [] },
   },
   {
@@ -26,7 +25,9 @@ const UserSchema = new Schema<User>(
   }
 );
 
-UserSchema.pre("save", async function (next) {
+UserSchema.plugin(uniqueValidator)
+
+UserSchema.pre("save", async function (this: User, next: HookNextFunction) {
   // before saving the user in the database, hash the password
   const newUser = this;
   const plainPW = newUser.password;
@@ -49,7 +50,7 @@ UserSchema.methods.toJSON = function () {
   return userObject;
 };
 
-UserSchema.statics.checkCredentials = async function (email, plainPW) {
+UserSchema.statics.checkCredentials = async function (email: string, plainPW: string) {
   const user = await this.findOne({ email }); // find the user by email, using this in a normal function to target the schema in this file
 
   if (user) {
@@ -64,7 +65,7 @@ UserSchema.statics.checkCredentials = async function (email, plainPW) {
   }
 };
 
-interface UserModel extends Model<User> {
+interface UserModel extends Model<User > {
   checkCredentials: (email: string, password: string) => Promise<User | null>;
 }
 
