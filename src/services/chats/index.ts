@@ -29,7 +29,7 @@ chatRouter.post("/", basicAuthMiddleware, async (req, res, next) => {
       members: { $all: [userId] },
     });
     if (oldChatMessage) {
-      console.log("oldeChatMessage")
+      console.log("oldChatMessage")
     } else {
       const newChatMessage = new ChatModel(req.body);
       // const { _id } = await newChatMessage.save();
