@@ -1,30 +1,32 @@
 import express from "express";
 import createHttpError from "http-errors";
 import ChatModel from "../chats/chatSchema";
-import { basicAuthMiddleware } from "../../auth/basic";
-// import { adminOnlyMiddleware } from "../../auth/admin";
 import { check, validationResult } from "express-validator";
 import { JWTAuthMiddleware } from "../../auth/token";
 import {
   JWTAuthenticate,
   verifyRefreshTokenAndGenerateNewTokens,
 } from "../../auth/tools";
-
+import { onlineUsers } from "../../socket";
 const chatRouter = express.Router();
 
-chatRouter.get("/", basicAuthMiddleware, async (req, res, next) => {
+chatRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const userId = req.body._id;
+    const userId = req.user!._id;
     const chats = await ChatModel.find({ members: userId });
+    const userSocket = onlineUsers.find( u => u._id === userId)!.socket
+
+    userSocket.join(chats.map(c => c._id))
+    
     res.send(chats);
   } catch (error) {
     next(error);
   }
 });
 
-chatRouter.post("/", basicAuthMiddleware, async (req, res, next) => {
+chatRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const userId = req.body._id;
+    const userId = req.user!._id;
     const oldChatMessage = await ChatModel.find({
       members: { $all: [userId] },
     });
@@ -40,7 +42,7 @@ chatRouter.post("/", basicAuthMiddleware, async (req, res, next) => {
   }
 });
 
-chatRouter.get("/:chatId", basicAuthMiddleware, async (req, res, next) => {
+chatRouter.get("/:chatId", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const chatId = req.params.chatId
     const singleChat = await ChatModel.findById(chatId)

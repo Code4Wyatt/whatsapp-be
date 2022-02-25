@@ -7,6 +7,8 @@ import { basicAuthMiddleware } from "../../auth/basic";
 import { check, validationResult } from "express-validator";
 import { JWTAuthMiddleware } from "../../auth/token";
 import { JWTAuthenticate, verifyRefreshTokenAndGenerateNewTokens } from "../../auth/tools";
+import { onlineUsers } from "../../socket";
+
 interface JWTResponse {
   _id: string,
   username: string
@@ -66,6 +68,7 @@ usersRouter.get(
   JWTAuthMiddleware,
   async (req, res, next) => {
     try {
+    
       const users = await UserModel.find();
       res.send(users);
     } catch (error) {

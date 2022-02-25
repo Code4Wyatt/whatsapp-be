@@ -1,3 +1,5 @@
+import { Socket } from "socket.io";
+
 interface User {
     _id: string;
     username: string;
@@ -7,8 +9,7 @@ interface User {
 }
 interface OnlineUser {
     _id: string;
-    username: string;
-    avatar: string;
+    socket: Socket;
 }
 
 
